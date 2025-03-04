@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -18,10 +19,17 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    // Указываем все поля из таблицы, кроме id, created_at и updated_at
     protected $fillable = [
+        'surname',
         'name',
+        'patronymic',
+        'sex',
+        'birthday',
         'email',
         'password',
+        'api_token',
+        'role_id',
     ];
 
     /**
@@ -31,7 +39,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
+        'api_token',
     ];
 
     /**
@@ -42,8 +50,12 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Связь M:1 с моделью Role
+    public function role(): BelongsTo {
+        return $this->belongsTo(Role::class);
     }
 }
